@@ -1,103 +1,147 @@
-import Image from "next/image";
+'use client';
+
+import React from 'react';
+import {
+  Box,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  Button,
+  Alert,
+  Chip,
+} from '@mui/material';
+import {
+  DirectionsRun as RunIcon,
+  CalendarToday as CalendarIcon,
+  TrendingUp as TrendingUpIcon,
+} from '@mui/icons-material';
+import { useAppStore } from '@/store/useAppStore';
+import { format } from 'date-fns';
+import { zhTW } from 'date-fns/locale';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const { currentSeason, seasons, setCurrentWeek } = useAppStore();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+  const handleQuickAccess = (weekNumber: number) => {
+    setCurrentWeek(weekNumber);
+  };
+
+  return (
+    <Box>
+      <Typography variant="h4" component="h1" gutterBottom>
+        儀表板
+      </Typography>
+
+      {!currentSeason ? (
+        <Alert severity="info" sx={{ mb: 3 }}>
+          尚未選擇任何季度。請先到「季度管理」建立或選擇一個訓練季度。
+        </Alert>
+      ) : (
+        <Box>
+          <Grid container spacing={3} sx={{ mb: 4 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Card>
+                <CardContent>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <RunIcon color="primary" sx={{ mr: 1 }} />
+                    <Typography variant="h6">目前季度</Typography>
+                  </Box>
+                  <Typography variant="h5" gutterBottom>
+                    {currentSeason.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    開始日期: {format(new Date(currentSeason.startDate), 'yyyy/MM/dd', { locale: zhTW })}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    總週數: {currentSeason.totalWeeks} 週
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Card>
+                <CardContent>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <CalendarIcon color="success" sx={{ mr: 1 }} />
+                    <Typography variant="h6">同步狀態</Typography>
+                  </Box>
+                  {currentSeason.googleCalendarId ? (
+                    <Box>
+                      <Chip label="已連結日曆" color="success" size="small" sx={{ mb: 1 }} />
+                      <Typography variant="body2" color="text.secondary">
+                        Google Calendar ID: {currentSeason.googleCalendarId}
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <Box>
+                      <Chip label="未連結日曆" color="default" size="small" sx={{ mb: 1 }} />
+                      <Typography variant="body2" color="text.secondary">
+                        尚未設定Google Calendar同步
+                      </Typography>
+                    </Box>
+                  )}
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Card>
+                <CardContent>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <TrendingUpIcon color="info" sx={{ mr: 1 }} />
+                    <Typography variant="h6">訓練統計</Typography>
+                  </Box>
+                  <Typography variant="h5" gutterBottom>
+                    {currentSeason.weeks.length} / {currentSeason.totalWeeks}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    已設定週次
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                快速存取週次
+              </Typography>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                {Array.from({ length: currentSeason.totalWeeks }, (_, i) => i + 1).map((week) => (
+                  <Button
+                    key={week}
+                    variant="outlined"
+                    size="small"
+                    onClick={() => handleQuickAccess(week)}
+                  >
+                    W{week}
+                  </Button>
+                ))}
+              </Box>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                最近更新
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                最後更新時間: {format(new Date(currentSeason.updatedAt), 'yyyy/MM/dd HH:mm', { locale: zhTW })}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Box>
+      )}
+
+      {seasons.length === 0 && (
+        <Alert severity="info" sx={{ mt: 3 }}>
+          系統中尚無任何季度資料。建議您先建立第一個訓練季度開始使用。
+        </Alert>
+      )}
+    </Box>
   );
 }
